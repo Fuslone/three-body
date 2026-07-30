@@ -1,0 +1,224 @@
+/* 全局基础样式 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+input,
+textarea,
+select {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+    "Microsoft YaHei", sans-serif;
+  background: #0a0a1a;
+  color: #e0e0ff;
+}
+
+#canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+}
+
+#canvas:active {
+  cursor: grabbing;
+}
+
+/* 顶部面板 */
+.body-list-wrapper {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  pointer-events: auto;
+  background: rgba(18, 22, 42, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(100, 150, 255, 0.15);
+  border-radius: 14px;
+  padding: 10px 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.02) inset;
+  max-width: calc(100vw - 80px);
+}
+
+.top-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.top-status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 8px;
+  font-size: 12px;
+  color: rgba(180, 190, 230, 0.7);
+}
+
+.status-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-label {
+  font-size: 11px;
+  color: rgba(180, 190, 230, 0.5);
+}
+
+.status-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(220, 230, 255, 0.9);
+  font-variant-numeric: tabular-nums;
+  min-width: 40px;
+  text-align: right;
+}
+
+.status-divider {
+  width: 1px;
+  height: 14px;
+  background: rgba(100, 150, 255, 0.2);
+}
+
+.top-buttons .btn-group {
+  gap: 6px;
+}
+
+.top-buttons button {
+  padding: 6px 14px;
+  font-size: 12px;
+  flex: none;
+}
+
+/* 角落按钮 */
+.corner-btn {
+  position: fixed;
+  bottom: 24px;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  flex: none;
+  font-size: 18px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(18, 22, 42, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(100, 150, 255, 0.18);
+  border-radius: 50%;
+  color: rgba(220, 230, 255, 0.8);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+  z-index: 20;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.corner-btn:hover {
+  background: rgba(40, 50, 90, 0.8);
+  border-color: rgba(120, 170, 255, 0.35);
+  box-shadow: 0 4px 24px rgba(100, 150, 255, 0.2);
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.corner-btn:active {
+  transform: scale(0.93);
+}
+
+.corner-btn-left {
+  left: 24px;
+}
+
+.corner-btn-right {
+  right: 24px;
+}
+
+.settings-btn-wrapper {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  pointer-events: auto;
+}
+
+.settings-btn-wrapper .corner-btn {
+  position: relative;
+  bottom: auto;
+}
+
+/* UI隐藏状态 */
+.ui-hidden .top-bar,
+.ui-hidden .corner-btn-right,
+.ui-hidden .body-list-wrapper,
+.ui-hidden .settings-btn-wrapper {
+  display: none;
+}
+
+.ui-hidden #bodyDetailModal {
+  display: none !important;
+}
+
+/* ===== 模态框遮罩（通用） ===== */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.modal-overlay.active {
+  display: flex;
+}
+
+/* ===== 通用滚动条 ===== */
+.custom-scroll::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.custom-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+  background: rgba(100, 150, 255, 0.25);
+  border-radius: 2px;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 150, 255, 0.4);
+}
