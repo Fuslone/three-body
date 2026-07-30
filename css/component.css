@@ -1,0 +1,689 @@
+/* 控件样式 */
+.control-row {
+  margin-bottom: 16px;
+}
+
+.control-row:last-child {
+  margin-bottom: 0;
+}
+
+.control-label {
+  font-size: 12px;
+  color: rgba(180, 190, 230, 0.7);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.btn-group {
+  display: flex;
+  gap: 8px;
+}
+
+/* ===== 按钮 ===== */
+button {
+  flex: 1;
+  padding: 9px 12px;
+  font-size: 13px;
+  color: rgba(220, 230, 255, 0.9);
+  background: rgba(60, 80, 140, 0.4);
+  border: 1px solid rgba(100, 150, 255, 0.25);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  letter-spacing: 0.5px;
+}
+
+button:hover {
+  background: rgba(80, 110, 180, 0.5);
+  border-color: rgba(120, 170, 255, 0.4);
+  box-shadow: 0 0 12px rgba(100, 150, 255, 0.2);
+}
+
+button:active {
+  transform: scale(0.97);
+}
+
+button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+button.primary {
+  background: linear-gradient(135deg, #4a6fff, #6a8fff);
+  border-color: rgba(120, 180, 255, 0.5);
+  color: white;
+  box-shadow: 0 2px 8px rgba(74, 111, 255, 0.3);
+}
+
+button.primary:hover {
+  background: linear-gradient(135deg, #5a7fff, #7a9fff);
+  box-shadow: 0 2px 12px rgba(74, 111, 255, 0.4);
+}
+
+button.primary:disabled,
+button.primary.disabled {
+  background: linear-gradient(135deg, #4a5570, #5a6580);
+  border-color: rgba(120, 130, 160, 0.3);
+  box-shadow: none;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* 存档区按钮（统一高度30px） */
+.btn-save,
+.btn-load,
+.btn-delete-save,
+.btn-export,
+.btn-import,
+.btn-cancel,
+.btn-confirm-export,
+.btn-confirm-delete,
+.btn-confirm {
+  height: 30px;
+  padding: 0 14px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  min-width: 52px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px;
+}
+
+/* 主操作渐变按钮 */
+.btn-save,
+.btn-confirm-export,
+.btn-confirm {
+  background: linear-gradient(135deg, #4a6fff, #6a8fff);
+  color: white;
+  border-color: transparent;
+  box-shadow: 0 2px 8px rgba(74, 111, 255, 0.25);
+}
+
+.btn-save:hover,
+.btn-confirm-export:hover,
+.btn-confirm:hover {
+  background: linear-gradient(135deg, #5a7fff, #7a9fff);
+  box-shadow: 0 2px 12px rgba(74, 111, 255, 0.35);
+}
+
+/* 蓝色描边按钮 */
+.btn-load,
+.btn-export,
+.btn-import {
+  background: rgba(100, 140, 255, 0.12);
+  color: #8aa8ff;
+  border-color: rgba(100, 140, 255, 0.25);
+}
+
+.btn-load:hover,
+.btn-export:hover,
+.btn-import:hover {
+  background: rgba(100, 140, 255, 0.22);
+  border-color: rgba(120, 170, 255, 0.4);
+}
+
+/* 红色删除按钮 */
+.btn-delete-save {
+  background: rgba(255, 80, 80, 0.1);
+  color: #ff9090;
+  border-color: rgba(255, 80, 80, 0.25);
+}
+
+.btn-delete-save:hover {
+  background: rgba(255, 80, 80, 0.2);
+  border-color: rgba(255, 100, 100, 0.4);
+}
+
+/* 灰色取消按钮 */
+.btn-cancel {
+  background: rgba(50, 65, 110, 0.5);
+  color: rgba(200, 210, 255, 0.8);
+  border-color: rgba(100, 150, 255, 0.2);
+}
+
+.btn-cancel:hover {
+  background: rgba(70, 95, 160, 0.5);
+  border-color: rgba(120, 170, 255, 0.35);
+}
+
+/* 红色危险确认按钮 */
+.btn-confirm-delete {
+  background: linear-gradient(135deg, #e04545, #ff6060);
+  color: white;
+  border-color: transparent;
+  box-shadow: 0 2px 8px rgba(224, 69, 69, 0.25);
+}
+
+.btn-confirm-delete:hover {
+  background: linear-gradient(135deg, #f05555, #ff7070);
+  box-shadow: 0 2px 12px rgba(224, 69, 69, 0.35);
+}
+
+/* 三按钮等宽 */
+.btn-delete-save,
+.btn-export,
+.btn-import,
+.export-modal-footer button,
+.confirm-buttons button {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ===== 输入框 ===== */
+.num-input,
+.text-input,
+.save-name-input,
+.load-select {
+  height: 30px;
+  background: rgba(30, 40, 70, 0.7);
+  border: 1px solid rgba(100, 150, 255, 0.25);
+  border-radius: 7px;
+  color: rgba(220, 230, 255, 0.95);
+  font-size: 12px;
+  outline: none;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.num-input {
+  width: 60px;
+  text-align: center;
+}
+
+.text-input {
+  width: 100px;
+  padding: 0 8px;
+}
+
+.save-name-input {
+  flex: 1;
+  padding: 0 10px;
+}
+
+.save-name-input::placeholder {
+  color: rgba(180, 190, 230, 0.3);
+}
+
+.num-input:focus,
+.text-input:focus,
+.save-name-input:focus,
+.load-select:focus,
+.select-wrapper:focus-within .load-select {
+  border-color: rgba(120, 180, 255, 0.6);
+  box-shadow: 0 0 8px rgba(100, 150, 255, 0.15);
+  background-color: rgba(40, 55, 90, 0.8);
+}
+
+.num-input:disabled,
+.text-input:disabled,
+.save-name-input:disabled,
+.load-select:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* ===== 下拉选择框 ===== */
+.select-wrapper {
+  position: relative;
+  flex: 1;
+}
+
+.load-select {
+  width: 100%;
+  padding: 0 28px 0 10px;
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.select-wrapper::after {
+  content: "";
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  width: 0;
+  height: 0;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-left: 6px solid rgba(160, 180, 255, 0.5);
+  transform: translateY(-50%);
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+
+.select-wrapper.open::after {
+  transform: translateY(-50%) rotate(90deg);
+}
+
+.load-select option {
+  background: #1a2038;
+  color: rgba(220, 230, 255, 0.9);
+  padding: 4px 8px;
+}
+
+/* ===== 开关控件 ===== */
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.toggle {
+  position: relative;
+  width: 40px;
+  height: 22px;
+  background: rgba(50, 65, 110, 0.6);
+  border-radius: 11px;
+  cursor: pointer;
+  transition: background 0.25s;
+  border: 1px solid rgba(100, 150, 255, 0.2);
+  flex: none;
+}
+
+.toggle.active {
+  background: rgba(80, 140, 230, 0.6);
+  border-color: rgba(120, 180, 255, 0.35);
+}
+
+.toggle::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  background: rgba(230, 240, 255, 0.9);
+  border-radius: 50%;
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.toggle.active::after {
+  transform: translateX(18px);
+}
+
+/* ===== 单选按钮组 ===== */
+.radio-group {
+  display: flex;
+  gap: 16px;
+}
+
+.radio-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: rgba(200, 210, 255, 0.7);
+  cursor: pointer;
+}
+
+.radio-label input[type="radio"] {
+  display: none;
+}
+
+.radio-custom {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid rgba(100, 150, 255, 0.35);
+  position: relative;
+  transition: all 0.2s;
+  flex: none;
+}
+
+.radio-label input[type="radio"]:checked + .radio-custom {
+  border-color: rgba(120, 180, 255, 0.7);
+}
+
+.radio-label input[type="radio"]:checked + .radio-custom::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(120, 180, 255, 0.9);
+}
+
+/* ===== 复选框 ===== */
+input[type="checkbox"] {
+  display: none;
+}
+
+.checkbox-custom {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  border: 2px solid rgba(100, 150, 255, 0.35);
+  position: relative;
+  transition: all 0.2s;
+  box-sizing: border-box;
+  flex: none;
+}
+
+input[type="checkbox"]:checked + .checkbox-custom {
+  background: rgba(100, 150, 255, 0.6);
+  border-color: rgba(120, 180, 255, 0.7);
+}
+
+input[type="checkbox"]:checked + .checkbox-custom::after {
+  content: "";
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  width: 6px;
+  height: 3px;
+  border-bottom: 2px solid white;
+  border-left: 2px solid white;
+  transform: rotate(-45deg);
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: rgba(200, 210, 255, 0.8);
+  cursor: pointer;
+  user-select: none;
+}
+
+/* ===== 颜色选择器 ===== */
+.color-picker-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.color-random-btn {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  flex: none;
+  font-size: 14px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(50, 65, 110, 0.5);
+  border: 1px solid rgba(100, 150, 255, 0.2);
+  border-radius: 7px;
+  color: rgba(200, 210, 255, 0.7);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.color-random-btn:hover {
+  background: rgba(70, 95, 160, 0.5);
+  border-color: rgba(120, 170, 255, 0.35);
+  box-shadow: 0 0 8px rgba(100, 150, 255, 0.15);
+}
+
+.color-random-btn:active {
+  transform: scale(0.95);
+}
+
+.color-picker {
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 7px;
+  background: none;
+  cursor: pointer;
+  padding: 0;
+  flex: none;
+}
+
+.color-picker:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.color-picker::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.color-picker::-webkit-color-swatch {
+  border: 2px solid rgba(100, 150, 255, 0.35);
+  border-radius: 7px;
+  transition: border-color 0.2s;
+}
+
+.color-picker:hover::-webkit-color-swatch {
+  border-color: rgba(120, 180, 255, 0.55);
+}
+
+/* ===== 高级设置 ===== */
+.advanced-section {
+  margin: 16px 0 16px;
+  padding: 16px 0 16px;
+  border-top: 1px solid rgba(100, 150, 255, 0.12);
+  border-bottom: 1px solid rgba(100, 150, 255, 0.12);
+}
+
+.advanced-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  color: rgba(180, 190, 230, 0.6);
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.2s;
+}
+
+.advanced-toggle:hover {
+  color: rgba(200, 210, 255, 0.85);
+}
+
+.advanced-arrow {
+  width: 0;
+  height: 0;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-left: 6px solid rgba(160, 180, 255, 0.5);
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.advanced-toggle.active .advanced-arrow {
+  transform: rotate(90deg);
+}
+
+.advanced-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1), padding-top 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 0;
+}
+
+.advanced-toggle.active + .advanced-content {
+  max-height: 800px;
+  padding-top: 16px;
+}
+
+.advanced-content > .control-row {
+  margin-bottom: 0;
+}
+
+#massRandomGroup,
+#speedRandomGroup,
+#posRandomGroup {
+  margin-bottom: 0;
+}
+
+/* ===== 存档管理 ===== */
+.save-load-section {
+  padding-bottom: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.save-load-row {
+  display: flex;
+  gap: 6px;
+}
+
+/* ===== 导出弹窗 ===== */
+.export-select-all-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(100, 150, 255, 0.1);
+}
+
+.export-count {
+  font-size: 11px;
+  color: rgba(180, 190, 230, 0.45);
+}
+
+.export-list {
+  max-height: 220px;
+  overflow-y: auto;
+  margin-bottom: 14px;
+  padding-right: 4px;
+}
+
+.export-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 10px;
+  border-radius: 7px;
+  margin-bottom: 3px;
+  background: rgba(30, 40, 70, 0.4);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.export-item:hover {
+  background: rgba(50, 70, 120, 0.45);
+}
+
+.export-item-name {
+  flex: 1;
+  min-width: 0;
+  font-size: 12px;
+  color: rgba(220, 230, 255, 0.9);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.export-empty {
+  text-align: center;
+  padding: 20px;
+  color: rgba(180, 190, 230, 0.4);
+  font-size: 12px;
+}
+
+.export-modal-footer {
+  display: flex;
+  gap: 8px;
+}
+
+/* ===== 确认弹窗 ===== */
+.confirm-content {
+  background: rgba(18, 22, 42, 0.98);
+  border: 1px solid rgba(100, 150, 255, 0.2);
+  border-radius: 14px;
+  padding: 28px 24px 20px;
+  max-width: 340px;
+  width: 90%;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.03) inset;
+}
+
+.confirm-icon {
+  text-align: center;
+  font-size: 32px;
+  margin-bottom: 10px;
+  line-height: 1;
+}
+
+.confirm-message {
+  text-align: center;
+  color: rgba(220, 230, 255, 0.9);
+  font-size: 14px;
+  line-height: 1.7;
+  margin-bottom: 20px;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+.confirm-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+/* ===== Toast提示 ===== */
+.toast {
+  position: fixed;
+  top: 72px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-10px);
+  background: rgba(18, 22, 42, 0.95);
+  border: 1px solid rgba(100, 150, 255, 0.25);
+  border-radius: 10px;
+  padding: 10px 20px;
+  color: rgba(220, 230, 255, 0.95);
+  font-size: 13px;
+  z-index: 300;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.03) inset;
+  white-space: nowrap;
+  max-width: 90vw;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.toast.success {
+  border-color: rgba(100, 220, 150, 0.35);
+}
+
+.toast.success::before {
+  content: "✓ ";
+  color: #66dd99;
+  font-weight: bold;
+}
+
+.toast.error {
+  border-color: rgba(255, 120, 120, 0.35);
+}
+
+.toast.error::before {
+  content: "✗ ";
+  color: #ff8888;
+  font-weight: bold;
+}
+
+.toast.info {
+  border-color: rgba(100, 150, 255, 0.35);
+}
+
+.toast.info::before {
+  content: "ⓘ ";
+  color: #88aaff;
+}
