@@ -12,7 +12,9 @@
 
 ## 🚀 开始
 
-执行以下命令后，进入 `three-body` 文件夹，打开 `index.html` 即可
+在线运行：**[fuslone.dpdns.org/three-body](https://fuslone.dpdns.org/three-body/)**
+
+本地运行：执行以下命令后，进入 `three-body` 文件夹，打开 `index.html` 
 
 ```Shell
 git clone https://github.com/Fuslone/three-body.git
