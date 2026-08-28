@@ -78,6 +78,7 @@ button.primary.disabled {
 .btn-delete-save,
 .btn-export,
 .btn-import,
+.btn-default,
 .btn-cancel,
 .btn-confirm-export,
 .btn-confirm-delete,
@@ -115,7 +116,8 @@ button.primary.disabled {
 /* 蓝色描边按钮 */
 .btn-load,
 .btn-export,
-.btn-import {
+.btn-import,
+.btn-default {
   background: rgba(100, 140, 255, 0.12);
   color: #8aa8ff;
   border-color: rgba(100, 140, 255, 0.25);
@@ -123,7 +125,8 @@ button.primary.disabled {
 
 .btn-load:hover,
 .btn-export:hover,
-.btn-import:hover {
+.btn-import:hover,
+.btn-default:hover {
   background: rgba(100, 140, 255, 0.22);
   border-color: rgba(120, 170, 255, 0.4);
 }
@@ -169,6 +172,7 @@ button.primary.disabled {
 .btn-delete-save,
 .btn-export,
 .btn-import,
+.btn-default,
 .export-modal-footer button,
 .confirm-buttons button {
   flex: 1;
@@ -177,7 +181,6 @@ button.primary.disabled {
 
 /* ===== 输入框 ===== */
 .num-input,
-.text-input,
 .save-name-input,
 .load-select {
   height: 30px;
@@ -192,13 +195,16 @@ button.primary.disabled {
 }
 
 .num-input {
-  width: 60px;
+  width: 66px;
   text-align: center;
+  appearance: textfield;
+  -moz-appearance: textfield;
 }
 
-.text-input {
-  width: 100px;
-  padding: 0 8px;
+.num-input::-webkit-outer-spin-button,
+.num-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 .save-name-input {
@@ -211,7 +217,6 @@ button.primary.disabled {
 }
 
 .num-input:focus,
-.text-input:focus,
 .save-name-input:focus,
 .load-select:focus,
 .select-wrapper:focus-within .load-select {
@@ -221,7 +226,6 @@ button.primary.disabled {
 }
 
 .num-input:disabled,
-.text-input:disabled,
 .save-name-input:disabled,
 .load-select:disabled {
   opacity: 0.35;
@@ -464,12 +468,21 @@ input[type="checkbox"]:checked + .checkbox-custom::after {
   border-color: rgba(120, 180, 255, 0.55);
 }
 
-/* ===== 高级设置 ===== */
+/* ===== 设置折叠栏 ===== */
 .advanced-section {
-  margin: 16px 0 16px;
-  padding: 16px 0 16px;
+  padding: 14px 0;
+}
+
+.advanced-section + .advanced-section {
   border-top: 1px solid rgba(100, 150, 255, 0.12);
-  border-bottom: 1px solid rgba(100, 150, 255, 0.12);
+}
+
+.modal-header + .advanced-section {
+  padding-top: 0;
+}
+
+.advanced-section:last-child {
+  padding-bottom: 0;
 }
 
 .advanced-toggle {
@@ -503,7 +516,7 @@ input[type="checkbox"]:checked + .checkbox-custom::after {
 .advanced-content {
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1), padding-top 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: max-height 0.3s linear, padding-top 0.3s linear;
   display: flex;
   flex-direction: column;
   gap: 16px;

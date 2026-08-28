@@ -31,9 +31,9 @@ function updateRandomControlsVisibility() {
 }
 
 function setControlsEnabled(enabled) {
+  // 运行中禁用的输入框（随机参数可随时修改，不在此列）
   const inputIds = [
-    "gravityInput", "dtInput", "softeningInput",
-    "massMinInput", "massMaxInput", "speedMinInput", "speedMaxInput", "posRangeInput",
+    "speedInput", "gravityInput", "dtInput", "softeningInput",
     "bodyMassInput", "bodySpeedInput", "bodyAngleInput", "bodyNameInput",
   ];
   inputIds.forEach((id) => {
@@ -96,14 +96,14 @@ function showBodyDetailModal() {
 
   $("bodyNameInput").value = body.name;
   $("bodyColor").value = body.color;
-  $("bodyMassInput").value = Math.round(body.mass);
+  $("bodyMassInput").value = body.mass.toFixed(2);
 
   const speedVal = Math.hypot(body.vx, body.vy);
   $("bodySpeedInput").value = speedVal.toFixed(2);
 
   let angle = (Math.atan2(body.vy, body.vx) * 180) / Math.PI;
   if (angle < 0) angle += 360;
-  $("bodyAngleInput").value = Math.round(angle);
+  $("bodyAngleInput").value = angle.toFixed(2);
 
   renderBodyList();
 }
@@ -247,13 +247,8 @@ function saveCurrentState(name) {
     version: 1,
     bodies: bodiesData,
     bodyNameCounter: State.bodyNameCounter,
-    G: State.G, dt: State.dt, softening: State.softening, speed: State.speed,
-    showTrail: State.showTrail, trailMode: State.trailMode, trailDuration: State.trailDuration,
-    showVelocity: State.showVelocity, showBodyNames: State.showBodyNames,
-    randomMass: State.randomMass, randomSpeed: State.randomSpeed, randomPosition: State.randomPosition,
-    randomMassMin: State.randomMassMin, randomMassMax: State.randomMassMax,
-    randomSpeedMin: State.randomSpeedMin, randomSpeedMax: State.randomSpeedMax,
-    randomPosRange: State.randomPosRange,
+    G: State.G,
+    softening: State.softening,
   };
 
   try {
@@ -273,48 +268,12 @@ function loadState(name) {
   State.initialBodies = cloneBodies(data.bodies);
   State.bodyNameCounter = data.bodyNameCounter || State.bodies.length;
   State.G = data.G;
-  State.dt = data.dt;
   State.softening = data.softening;
-  State.speed = data.speed;
-  State.showTrail = data.showTrail;
-  State.trailMode = data.trailMode;
-  State.trailDuration = data.trailDuration;
-  State.showVelocity = data.showVelocity;
-  State.showBodyNames = data.showBodyNames;
-  State.randomMass = data.randomMass !== undefined ? data.randomMass : true;
-  State.randomSpeed = data.randomSpeed !== undefined ? data.randomSpeed : true;
-  State.randomPosition = data.randomPosition !== undefined ? data.randomPosition : true;
-  State.randomMassMin = data.randomMassMin !== undefined ? data.randomMassMin : 500;
-  State.randomMassMax = data.randomMassMax !== undefined ? data.randomMassMax : 1500;
-  State.randomSpeedMin = data.randomSpeedMin !== undefined ? data.randomSpeedMin : 0.5;
-  State.randomSpeedMax = data.randomSpeedMax !== undefined ? data.randomSpeedMax : 1.3;
-  State.randomPosRange = data.randomPosRange !== undefined ? data.randomPosRange : 200;
 
-  $("speedInput").value = data.speed.toFixed(1);
-  $("gravityInput").value = Math.round(data.G);
-  $("dtInput").value = data.dt.toFixed(3);
-  $("softeningInput").value = Math.round(data.softening);
-  $("trailDurationInput").value = Math.round(data.trailDuration);
-  $("massMinInput").value = Math.round(State.randomMassMin * 1000) / 1000;
-  $("massMaxInput").value = Math.round(State.randomMassMax * 1000) / 1000;
-  $("speedMinInput").value = State.randomSpeedMin.toFixed(2);
-  $("speedMaxInput").value = State.randomSpeedMax.toFixed(2);
-  $("posRangeInput").value = Math.round(State.randomPosRange);
-
-  $("trailToggle").classList.toggle("active", data.showTrail);
-  $("velocityToggle").classList.toggle("active", data.showVelocity);
-  $("bodyNameToggle").classList.toggle("active", data.showBodyNames);
-  $("randomMassToggle").classList.toggle("active", State.randomMass);
-  $("randomSpeedToggle").classList.toggle("active", State.randomSpeed);
-  $("randomPositionToggle").classList.toggle("active", State.randomPosition);
-
-  document.querySelectorAll('input[name="trailMode"]').forEach((r) => {
-    r.checked = r.value === data.trailMode;
-  });
+  $("gravityInput").value = data.G.toFixed(2);
+  $("softeningInput").value = data.softening.toFixed(2);
 
   initAccelerations();
-  updateTrailControlsVisibility();
-  updateRandomControlsVisibility();
   enterInitialState();
 
   return true;
@@ -637,6 +596,143 @@ function importSavesFromFiles(files) {
       applyImport(true);
     }
   });
+}
+
+// ===== 设置管理 =====
+
+const SETTINGS_STORAGE_KEY = "three-body-settings";
+
+const DEFAULT_SETTINGS = {
+  speed: 1,
+  dt: 0.01,
+  showTrail: true,
+  trailMode: "partial",
+  trailDuration: 10,
+  showVelocity: false,
+  showBodyNames: false,
+  randomMass: true,
+  randomSpeed: true,
+  randomPosition: true,
+  randomMassMin: 500,
+  randomMassMax: 1500,
+  randomSpeedMin: 0.5,
+  randomSpeedMax: 1.3,
+  randomPosRange: 200,
+};
+
+function getSettingsSnapshot() {
+  const snapshot = {};
+  for (const key in DEFAULT_SETTINGS) {
+    snapshot[key] = State[key];
+  }
+  return snapshot;
+}
+
+function persistSettings() {
+  try {
+    localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(getSettingsSnapshot()));
+  } catch {}
+}
+
+function applyParamsToUI() {
+  $("speedInput").value = State.speed.toFixed(2);
+  $("dtInput").value = State.dt.toFixed(2);
+  $("gravityInput").value = State.G.toFixed(2);
+  $("softeningInput").value = State.softening.toFixed(2);
+  $("trailDurationInput").value = State.trailDuration.toFixed(2);
+  $("massMinInput").value = State.randomMassMin.toFixed(2);
+  $("massMaxInput").value = State.randomMassMax.toFixed(2);
+  $("speedMinInput").value = State.randomSpeedMin.toFixed(2);
+  $("speedMaxInput").value = State.randomSpeedMax.toFixed(2);
+  $("posRangeInput").value = State.randomPosRange.toFixed(2);
+
+  $("trailToggle").classList.toggle("active", State.showTrail);
+  $("velocityToggle").classList.toggle("active", State.showVelocity);
+  $("bodyNameToggle").classList.toggle("active", State.showBodyNames);
+  $("randomMassToggle").classList.toggle("active", State.randomMass);
+  $("randomSpeedToggle").classList.toggle("active", State.randomSpeed);
+  $("randomPositionToggle").classList.toggle("active", State.randomPosition);
+
+  document.querySelectorAll('input[name="trailMode"]').forEach((r) => {
+    r.checked = r.value === State.trailMode;
+  });
+
+  updateTrailControlsVisibility();
+  updateRandomControlsVisibility();
+}
+
+function loadSettingsFromBrowser() {
+  let data = null;
+  try {
+    data = JSON.parse(localStorage.getItem(SETTINGS_STORAGE_KEY));
+  } catch {
+    data = null;
+  }
+  if (data && typeof data === "object") {
+    for (const key in DEFAULT_SETTINGS) {
+      if (data[key] !== undefined) State[key] = data[key];
+    }
+  }
+  applyParamsToUI();
+}
+
+function exportSettingsFile() {
+  const blob = new Blob(
+    [JSON.stringify({ version: 1, settings: getSettingsSnapshot() }, null, 2)],
+    { type: "application/json" }
+  );
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "three-body-settings.json";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast("已导出设置", "success");
+}
+
+function importSettingsFile(file) {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    let data;
+    try {
+      data = JSON.parse(e.target.result);
+    } catch {
+      showToast("文件解析失败", "error");
+      return;
+    }
+    const settings = data && typeof data === "object" && data.settings && typeof data.settings === "object"
+      ? data.settings
+      : data;
+    if (!settings || typeof settings !== "object") {
+      showToast("无效的设置文件格式", "error");
+      return;
+    }
+    let applied = 0;
+    for (const key in DEFAULT_SETTINGS) {
+      if (settings[key] !== undefined) {
+        State[key] = settings[key];
+        applied++;
+      }
+    }
+    if (applied === 0) {
+      showToast("没有可应用的设置项", "error");
+      return;
+    }
+    applyParamsToUI();
+    persistSettings();
+    showToast("已导入设置", "success");
+  };
+  reader.onerror = () => showToast("文件读取失败", "error");
+  reader.readAsText(file);
+}
+
+function resetSettingsToDefault() {
+  Object.assign(State, DEFAULT_SETTINGS);
+  applyParamsToUI();
+  persistSettings();
+  showToast("已恢复默认设置", "success");
 }
 
 // ===== Toast与确认弹窗 =====

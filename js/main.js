@@ -42,7 +42,7 @@ function updateSelectedBodyHUD() {
   $("bodySpeedInput").value = speedVal.toFixed(2);
   let angle = (Math.atan2(body.vy, body.vx) * 180) / Math.PI;
   if (angle < 0) angle += 360;
-  $("bodyAngleInput").value = Math.round(angle);
+  $("bodyAngleInput").value = angle.toFixed(2);
 }
 
 function zeroMomentum() {
@@ -279,6 +279,32 @@ function handleDragEnd() {
 
 // ===== 弹窗管理 =====
 
+// .advanced-content 展开后的 padding-top（见 component.css），测量展开高度时需补偿
+const ADVANCED_PAD_TOP = 16;
+
+function toggleAdvancedSection(toggleEl) {
+  const content = toggleEl.nextElementSibling;
+  if (!content) return;
+  const isActive = toggleEl.classList.toggle("active");
+
+  if (isActive) {
+    content.style.maxHeight = (content.scrollHeight + ADVANCED_PAD_TOP) + "px";
+    content.addEventListener("transitionend", function handler(e) {
+      if (e.propertyName !== "max-height") return;
+      content.removeEventListener("transitionend", handler);
+      if (toggleEl.classList.contains("active")) {
+        content.style.maxHeight = "none";
+      }
+    });
+  } else {
+    if (content.style.maxHeight === "none") {
+      content.style.maxHeight = (content.scrollHeight + ADVANCED_PAD_TOP) + "px";
+      void content.offsetHeight; // 强制回流，确保从当前高度过渡
+    }
+    content.style.maxHeight = "0";
+  }
+}
+
 function closeAllModals() {
   ["helpModal", "settingsModal", "bodyDetailModal", "exportModal", "deleteModal", "confirmModal"].forEach((id) => {
     $(id)?.classList.remove("active");
@@ -299,16 +325,34 @@ function closeModalOnOverlayClick(modalId) {
 
 // ===== 事件绑定辅助 =====
 
-function bindSimParamInput(id, stateKey, defaultValue, min, max, formatter, needsRecompute) {
-  $(id).addEventListener("change", function () {
-    if (State.simulationTime !== 0) {
-      this.value = formatter(State[stateKey]);
-      return;
-    }
-    const val = parseNumber(this.value, defaultValue, min, max);
-    State[stateKey] = val;
-    this.value = formatter(val);
-    if (needsRecompute) initAccelerations();
+// 参数输入框配置（HTML 中只保留 type/class/id，初始值与范围统一在此维护）
+// guard: 模拟开始后禁止修改；recompute: 变更后重算加速度；persist: 变更后持久化设置
+const PARAM_INPUTS = [
+  { id: "speedInput", key: "speed", def: 1, min: 0.01, max: null, guard: true, persist: true },
+  { id: "dtInput", key: "dt", def: 0.01, min: 0.01, max: null, guard: true, persist: true },
+  { id: "gravityInput", key: "G", def: 500, min: 0.01, max: 100000, guard: true, recompute: true },
+  { id: "softeningInput", key: "softening", def: 20, min: 0, max: 200, guard: true, recompute: true },
+  { id: "trailDurationInput", key: "trailDuration", def: 10, min: 0.01, max: 10000, persist: true },
+  { id: "posRangeInput", key: "randomPosRange", def: 200, min: 0.01, max: 10000, persist: true },
+];
+
+function formatParam(v) {
+  return v.toFixed(2);
+}
+
+function bindParamInputs() {
+  PARAM_INPUTS.forEach(({ id, key, def, min, max, guard, recompute, persist }) => {
+    $(id).addEventListener("change", function () {
+      if (guard && State.simulationTime !== 0) {
+        this.value = formatParam(State[key]);
+        return;
+      }
+      const val = parseNumber(this.value, def, min, max);
+      State[key] = val;
+      this.value = formatParam(val);
+      if (recompute) initAccelerations();
+      if (persist) persistSettings();
+    });
   });
 }
 
@@ -355,29 +399,27 @@ function bindEvents() {
   $("resetBtn").addEventListener("click", reset);
   $("randomBtn").addEventListener("click", randomBodies);
 
-  // --- 模拟参数 ---
-  $("speedInput").addEventListener("change", function () {
-    const val = parseNumber(this.value, 1, 0.01, null);
-    State.speed = val;
-    this.value = val.toFixed(1);
-  });
+  // --- 模拟/宇宙/随机参数（统一配置表绑定） ---
+  bindParamInputs();
 
-  bindSimParamInput("gravityInput", "G", 500, 1, 100000, (v) => Math.round(v).toString(), true);
-  bindSimParamInput("dtInput", "dt", 0.01, 0.001, 0.1, (v) => v.toFixed(3), false);
-  bindSimParamInput("softeningInput", "softening", 20, 0, 200, (v) => Math.round(v).toString(), true);
-
-  // --- 随机生成参数 ---
-  $("advancedToggle").addEventListener("click", function () {
-    this.classList.toggle("active");
-  });
+  // --- 设置面板折叠栏 ---
+  ["runParamsToggle", "randomParamsToggle", "universeParamsToggle", "saveSectionToggle", "settingsMgmtToggle"]
+    .forEach((id) => {
+      $(id).addEventListener("click", function () {
+        toggleAdvancedSection(this);
+      });
+    });
 
   // 质量范围
   setupMinMaxInputs(
     "massMinInput", "massMaxInput",
     State.randomMassMin, State.randomMassMax,
-    0.001, 1e6,
-    (v) => Math.round(v * 1000) / 1000,
-    (min, max) => { State.randomMassMin = min; State.randomMassMax = max; }
+    0.01, 1e6,
+    (v) => v.toFixed(2),
+    (min, max) => {
+      State.randomMassMin = min; State.randomMassMax = max;
+      persistSettings();
+    }
   );
   // 速度范围
   setupMinMaxInputs(
@@ -385,36 +427,40 @@ function bindEvents() {
     State.randomSpeedMin, State.randomSpeedMax,
     0, 1000,
     (v) => v.toFixed(2),
-    (min, max) => { State.randomSpeedMin = min; State.randomSpeedMax = max; }
+    (min, max) => {
+      State.randomSpeedMin = min; State.randomSpeedMax = max;
+      persistSettings();
+    }
   );
 
-  $("posRangeInput").addEventListener("change", function () {
-    const val = parseNumber(this.value, State.randomPosRange, 1, 10000);
-    State.randomPosRange = val;
-    this.value = Math.round(val);
+  // --- 显示选项 ---
+  bindToggle("velocityToggle", "showVelocity", persistSettings);
+  bindToggle("bodyNameToggle", "showBodyNames", persistSettings);
+  bindToggle("trailToggle", "showTrail", () => {
+    updateTrailControlsVisibility();
+    persistSettings();
   });
 
-  // --- 显示选项 ---
-  bindToggle("velocityToggle", "showVelocity");
-  bindToggle("bodyNameToggle", "showBodyNames");
-  bindToggle("trailToggle", "showTrail", updateTrailControlsVisibility);
-
   // --- 随机生成选项 ---
-  bindToggle("randomMassToggle", "randomMass", updateRandomControlsVisibility);
-  bindToggle("randomSpeedToggle", "randomSpeed", updateRandomControlsVisibility);
-  bindToggle("randomPositionToggle", "randomPosition", updateRandomControlsVisibility);
+  bindToggle("randomMassToggle", "randomMass", () => {
+    updateRandomControlsVisibility();
+    persistSettings();
+  });
+  bindToggle("randomSpeedToggle", "randomSpeed", () => {
+    updateRandomControlsVisibility();
+    persistSettings();
+  });
+  bindToggle("randomPositionToggle", "randomPosition", () => {
+    updateRandomControlsVisibility();
+    persistSettings();
+  });
 
   document.querySelectorAll('input[name="trailMode"]').forEach((radio) => {
     radio.addEventListener("change", function () {
       State.trailMode = this.value;
       updateTrailControlsVisibility();
+      persistSettings();
     });
-  });
-
-  $("trailDurationInput").addEventListener("change", function () {
-    const val = parseNumber(this.value, 10, 1, 10000);
-    State.trailDuration = val;
-    this.value = Math.round(val);
   });
 
   // --- 天体编辑 ---
@@ -425,10 +471,10 @@ function bindEvents() {
   });
 
   bindBodyParamInput("bodyMassInput", (body, input) => {
-    const val = parseNumber(input.value, 1000, 0.001, 1e6);
+    const val = parseNumber(input.value, 1000, 0.01, 1e6);
     body.mass = val;
     body.radius = getBodyRadius(val);
-    return Math.round(val * 1000) / 1000;
+    return val.toFixed(2);
   });
 
   bindBodyParamInput("bodySpeedInput", (body, input) => {
@@ -443,7 +489,7 @@ function bindEvents() {
     const raw = parseFloat(input.value);
     if (isNaN(raw) || !isFinite(raw)) {
       const ca = (Math.atan2(body.vy, body.vx) * 180) / Math.PI;
-      return Math.round(ca < 0 ? ca + 360 : ca);
+      return (ca < 0 ? ca + 360 : ca).toFixed(2);
     }
     let val = raw;
     while (val < 0) val += 360;
@@ -452,7 +498,7 @@ function bindEvents() {
     const currentSpeed = Math.hypot(body.vx, body.vy);
     body.vx = Math.cos(angle) * currentSpeed;
     body.vy = Math.sin(angle) * currentSpeed;
-    return Math.round(val);
+    return val.toFixed(2);
   });
 
   $("colorRandomBtn").addEventListener("click", function () {
@@ -622,6 +668,17 @@ function bindEvents() {
     this.value = "";
   });
 
+  // --- 设置管理 ---
+  $("exportSettingsBtn").addEventListener("click", exportSettingsFile);
+  $("importSettingsBtn").addEventListener("click", () => $("settingsImportFileInput").click());
+  $("settingsImportFileInput").addEventListener("change", function (e) {
+    if (e.target.files.length > 0) importSettingsFile(e.target.files[0]);
+    this.value = "";
+  });
+  $("resetSettingsBtn").addEventListener("click", () => {
+    showConfirm("确定恢复默认设置吗？", resetSettingsToDefault);
+  });
+
   // --- 下拉选择框箭头 ---
   const loadWrapper = $("loadSelectWrapper");
   $("loadSelect").addEventListener("focus", () => loadWrapper.classList.add("open"));
@@ -636,9 +693,8 @@ function bindEvents() {
   State.ctx = State.canvas.getContext("2d");
 
   resize();
+  loadSettingsFromBrowser();
   randomBodies();
-  updateTrailControlsVisibility();
-  updateRandomControlsVisibility();
   refreshLoadSelect();
   bindEvents();
   animate();
