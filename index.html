@@ -29,7 +29,7 @@
             <button id="playBtn" class="primary">开始</button>
             <button id="resetBtn" class="primary">重置</button>
           </div>
-          <button id="randomBtn" class="primary">随机生成</button>
+          <button id="randomBtn" class="primary">随机</button>
         </div>
         <div class="body-list custom-scroll" id="bodyList"></div>
       </div>
@@ -70,18 +70,16 @@
           <ul>
             <li>「开始」或「暂停」可运行或暂停模拟</li>
             <li>「重置」可重置天体位置</li>
-            <li>「随机生成」可随机生成一组天体数据</li>
+            <li>「随机」可随机生成一组天体数据</li>
           </ul>
         </div>
         <div class="help-section">
           <h3>设置选项</h3>
           <ul>
-            <li>模拟速度：调整模拟快慢</li>
-            <li>天体名字：显示/隐藏天体名称</li>
-            <li>速度方向：显示/隐藏速度箭头</li>
-            <li>显示轨迹：显示/隐藏运动轨迹</li>
-            <li>轨迹模式：部分（固定时长）/ 全部（完整记录）</li>
-            <li>高级设置：引力常数、时间步长、软化因子、随机参数范围</li>
+            <li>运行参数：模拟速度、时间步长、天体名字、速度方向、显示轨迹</li>
+            <li>随机参数：随机质量/速度/位置及其范围</li>
+            <li>宇宙参数：引力常数、软化因子</li>
+            <li>运行参数与随机参数自动保存在浏览器</li>
           </ul>
         </div>
         <div class="help-section">
@@ -95,11 +93,19 @@
         <div class="help-section">
           <h3>存档管理</h3>
           <ul>
-            <li>保存：输入名称保存当前状态到浏览器</li>
+            <li>保存：输入名称保存到浏览器</li>
             <li>加载：从下拉列表选择存档并加载</li>
             <li>删除：删除选中的存档</li>
             <li>导出：选择存档导出为JSON文件</li>
             <li>导入：从JSON文件导入存档</li>
+          </ul>
+        </div>
+        <div class="help-section">
+          <h3>设置管理</h3>
+          <ul>
+            <li>导出：将设置导出为JSON文件</li>
+            <li>导入：从JSON文件导入设置</li>
+            <li>恢复：将设置恢复为默认值</li>
           </ul>
         </div>
       </div>
@@ -113,12 +119,7 @@
         <div class="control-row">
           <div class="control-label">
             <span>名称</span>
-            <input
-              type="text"
-              class="text-input"
-              id="bodyNameInput"
-              value="天体1"
-            />
+            <input type="text" class="num-input" id="bodyNameInput" />
           </div>
         </div>
 
@@ -140,42 +141,21 @@
         <div class="control-row">
           <div class="control-label">
             <span>质量</span>
-            <input
-              type="number"
-              class="num-input"
-              id="bodyMassInput"
-              step="50"
-              value="1000"
-            />
+            <input type="number" class="num-input" id="bodyMassInput" />
           </div>
         </div>
 
         <div class="control-row">
           <div class="control-label">
             <span>速度大小</span>
-            <input
-              type="number"
-              class="num-input"
-              id="bodySpeedInput"
-              step="0.05"
-              value="1"
-            />
+            <input type="number" class="num-input" id="bodySpeedInput" />
           </div>
         </div>
 
         <div class="control-row">
           <div class="control-label">
             <span>速度方向(°)</span>
-            <input
-              type="number"
-              class="num-input"
-              id="bodyAngleInput"
-              min="0"
-              max="360"
-              step="1"
-              value="0"
-              style="width: 55px"
-            />
+            <input type="number" class="num-input" id="bodyAngleInput" />
           </div>
         </div>
       </div>
@@ -187,129 +167,88 @@
           <h2>设置</h2>
         </div>
 
-        <div class="control-row">
-          <div class="control-label">
-            <span>模拟速度</span>
-            <input
-              type="number"
-              class="num-input"
-              id="speedInput"
-              min="0.01"
-              step="0.1"
-              value="1"
-              style="width: 55px"
-            />
+        <div class="advanced-section">
+          <div class="advanced-toggle" id="runParamsToggle">
+            <span>运行参数</span>
+            <span class="advanced-arrow"></span>
           </div>
-        </div>
-
-        <div class="control-row">
-          <div class="toggle-row">
-            <span style="font-size: 12px; color: rgba(180, 190, 230, 0.7)"
-              >天体名字</span
-            >
-            <div class="toggle" id="bodyNameToggle"></div>
-          </div>
-        </div>
-
-        <div class="control-row">
-          <div class="toggle-row">
-            <span style="font-size: 12px; color: rgba(180, 190, 230, 0.7)"
-              >速度方向</span
-            >
-            <div class="toggle" id="velocityToggle"></div>
-          </div>
-        </div>
-
-        <div class="control-row">
-          <div class="toggle-row">
-            <div style="display: flex; flex-direction: column; gap: 2px">
-              <span style="font-size: 12px; color: rgba(180, 190, 230, 0.7)"
-                >显示轨迹</span
-              >
-              <span style="font-size: 10px; color: rgba(180, 190, 230, 0.4)"
-                >可能导致性能下降</span
-              >
+          <div class="advanced-content">
+            <div class="control-row">
+              <div class="control-label">
+                <span>模拟速度</span>
+                <input type="number" class="num-input" id="speedInput" />
+              </div>
             </div>
-            <div class="toggle active" id="trailToggle"></div>
-          </div>
-        </div>
 
-        <div class="control-row" id="trailModeRow">
-          <div class="radio-group">
-            <label class="radio-label">
-              <input type="radio" name="trailMode" value="partial" checked />
-              <span class="radio-custom"></span>
-              <span>部分</span>
-            </label>
-            <label class="radio-label">
-              <input type="radio" name="trailMode" value="full" />
-              <span class="radio-custom"></span>
-              <span>全部</span>
-            </label>
-          </div>
-        </div>
+            <div class="control-row">
+              <div class="control-label">
+                <span>时间步长</span>
+                <input type="number" class="num-input" id="dtInput" />
+              </div>
+            </div>
 
-        <div class="control-row" id="trailDurationRow">
-          <div class="control-label">
-            <span>轨迹时长(秒)</span>
-            <input
-              type="number"
-              class="num-input"
-              id="trailDurationInput"
-              min="1"
-              max="100"
-              step="1"
-              value="10"
-              style="width: 55px"
-            />
+            <div class="control-row">
+              <div class="toggle-row">
+                <span style="font-size: 12px; color: rgba(180, 190, 230, 0.7)"
+                  >天体名字</span
+                >
+                <div class="toggle" id="bodyNameToggle"></div>
+              </div>
+            </div>
+
+            <div class="control-row">
+              <div class="toggle-row">
+                <span style="font-size: 12px; color: rgba(180, 190, 230, 0.7)"
+                  >速度方向</span
+                >
+                <div class="toggle" id="velocityToggle"></div>
+              </div>
+            </div>
+
+            <div class="control-row">
+              <div class="toggle-row">
+                <div style="display: flex; flex-direction: column; gap: 2px">
+                  <span style="font-size: 12px; color: rgba(180, 190, 230, 0.7)"
+                    >显示轨迹</span
+                  >
+                  <span style="font-size: 10px; color: rgba(180, 190, 230, 0.4)"
+                    >可能导致性能下降</span
+                  >
+                </div>
+                <div class="toggle active" id="trailToggle"></div>
+              </div>
+            </div>
+
+            <div class="control-row" id="trailModeRow">
+              <div class="radio-group">
+                <label class="radio-label">
+                  <input type="radio" name="trailMode" value="partial" checked />
+                  <span class="radio-custom"></span>
+                  <span>部分</span>
+                </label>
+                <label class="radio-label">
+                  <input type="radio" name="trailMode" value="full" />
+                  <span class="radio-custom"></span>
+                  <span>全部</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="control-row" id="trailDurationRow">
+              <div class="control-label">
+                <span>轨迹时长(秒)</span>
+                <input type="number" class="num-input" id="trailDurationInput" />
+              </div>
+            </div>
           </div>
         </div>
 
         <div class="advanced-section">
-          <div class="advanced-toggle" id="advancedToggle">
-            <span>高级设置</span>
+          <div class="advanced-toggle" id="randomParamsToggle">
+            <span>随机参数</span>
             <span class="advanced-arrow"></span>
           </div>
-          <div class="advanced-content" id="advancedContent">
-            <div class="control-row">
-              <div class="control-label">
-                <span>引力常数</span>
-                <input
-                  type="number"
-                  class="num-input"
-                  id="gravityInput"
-                  step="10"
-                  value="500"
-                  style="width: 55px"
-                />
-              </div>
-            </div>
-            <div class="control-row">
-              <div class="control-label">
-                <span>时间步长</span>
-                <input
-                  type="number"
-                  class="num-input"
-                  id="dtInput"
-                  step="0.001"
-                  value="0.01"
-                  style="width: 55px"
-                />
-              </div>
-            </div>
-            <div class="control-row">
-              <div class="control-label">
-                <span>软化因子</span>
-                <input
-                  type="number"
-                  class="num-input"
-                  id="softeningInput"
-                  step="1"
-                  value="20"
-                  style="width: 55px"
-                />
-              </div>
-            </div>
+          <div class="advanced-content">
             <div class="control-row">
               <div class="toggle-row">
                 <span style="font-size: 12px; color: rgba(180, 190, 230, 0.7)">随机质量</span>
@@ -320,27 +259,13 @@
               <div class="control-row">
                 <div class="control-label">
                   <span>随机质量最小值</span>
-                  <input
-                    type="number"
-                    class="num-input"
-                    id="massMinInput"
-                    step="50"
-                    value="500"
-                    style="width: 55px"
-                  />
+                  <input type="number" class="num-input" id="massMinInput" />
                 </div>
               </div>
               <div class="control-row">
                 <div class="control-label">
                   <span>随机质量最大值</span>
-                  <input
-                    type="number"
-                    class="num-input"
-                    id="massMaxInput"
-                    step="50"
-                    value="1500"
-                    style="width: 55px"
-                  />
+                  <input type="number" class="num-input" id="massMaxInput" />
                 </div>
               </div>
             </div>
@@ -354,27 +279,13 @@
               <div class="control-row">
                 <div class="control-label">
                   <span>随机速度最小值</span>
-                  <input
-                    type="number"
-                    class="num-input"
-                    id="speedMinInput"
-                    step="0.1"
-                    value="0.5"
-                    style="width: 55px"
-                  />
+                  <input type="number" class="num-input" id="speedMinInput" />
                 </div>
               </div>
               <div class="control-row">
                 <div class="control-label">
                   <span>随机速度最大值</span>
-                  <input
-                    type="number"
-                    class="num-input"
-                    id="speedMaxInput"
-                    step="0.1"
-                    value="1.3"
-                    style="width: 55px"
-                  />
+                  <input type="number" class="num-input" id="speedMaxInput" />
                 </div>
               </div>
             </div>
@@ -388,38 +299,77 @@
               <div class="control-row">
                 <div class="control-label">
                   <span>随机位置范围</span>
-                  <input
-                    type="number"
-                    class="num-input"
-                    id="posRangeInput"
-                    step="10"
-                    value="200"
-                    style="width: 55px"
-                  />
+                  <input type="number" class="num-input" id="posRangeInput" />
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="save-load-section">
-          <div class="save-load-row">
-            <input type="text" id="saveNameInput" class="save-name-input" placeholder="输入存档名称" />
-            <button class="btn-save" id="saveBtn">保存</button>
+        <div class="advanced-section">
+          <div class="advanced-toggle" id="universeParamsToggle">
+            <span>宇宙参数</span>
+            <span class="advanced-arrow"></span>
           </div>
-          <div class="save-load-row">
-            <div class="select-wrapper" id="loadSelectWrapper">
-              <select id="loadSelect" class="load-select">
-                <option value="" disabled selected>选择存档</option>
-              </select>
+          <div class="advanced-content">
+            <div class="control-row">
+              <div class="control-label">
+                <span>引力常数</span>
+                <input type="number" class="num-input" id="gravityInput" />
+              </div>
             </div>
-            <button class="btn-load" id="loadBtn">加载</button>
+            <div class="control-row">
+              <div class="control-label">
+                <span>软化因子</span>
+                <input type="number" class="num-input" id="softeningInput" />
+              </div>
+            </div>
           </div>
-          <div class="save-load-row">
-            <button class="btn-import" id="importBtn">导入</button>
-            <button class="btn-export" id="exportBtn">导出</button>
-            <button class="btn-delete-save" id="deleteSaveBtn">删除</button>
-            <input type="file" id="importFileInput" accept=".json" multiple style="display: none" />
+        </div>
+
+        <div class="advanced-section">
+          <div class="advanced-toggle" id="saveSectionToggle">
+            <span>存档管理</span>
+            <span class="advanced-arrow"></span>
+          </div>
+          <div class="advanced-content">
+            <div class="save-load-section">
+              <div class="save-load-row">
+                <input type="text" id="saveNameInput" class="save-name-input" placeholder="输入存档名称" />
+                <button class="btn-save" id="saveBtn">保存</button>
+              </div>
+              <div class="save-load-row">
+                <div class="select-wrapper" id="loadSelectWrapper">
+                  <select id="loadSelect" class="load-select">
+                    <option value="" disabled selected>选择存档</option>
+                  </select>
+                </div>
+                <button class="btn-load" id="loadBtn">加载</button>
+              </div>
+              <div class="save-load-row">
+                <button class="btn-import" id="importBtn">导入</button>
+                <button class="btn-export" id="exportBtn">导出</button>
+                <button class="btn-delete-save" id="deleteSaveBtn">删除</button>
+                <input type="file" id="importFileInput" accept=".json" multiple style="display: none" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="advanced-section">
+          <div class="advanced-toggle" id="settingsMgmtToggle">
+            <span>设置管理</span>
+            <span class="advanced-arrow"></span>
+          </div>
+          <div class="advanced-content">
+            <div class="save-load-section">
+              <div class="save-load-row">
+                <button class="btn-import" id="importSettingsBtn">导入</button>
+                <button class="btn-export" id="exportSettingsBtn">导出</button>
+                <button class="btn-default" id="resetSettingsBtn">恢复</button>
+                <input type="file" id="settingsImportFileInput" accept=".json" style="display: none" />
+              </div>
+            </div>
           </div>
         </div>
       </div>
