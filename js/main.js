@@ -556,6 +556,9 @@ function bindEvents() {
 
   // --- 触摸交互 ---
   canvas.addEventListener("touchstart", function (e) {
+    // 阻止浏览器在 touchend 后合成 mousedown/mouseup，
+    // 避免运行中点选天体后，合成的 mousedown 因天体已移动而命中背景、触发 handleBackgroundPress 导致立刻失焦
+    e.preventDefault();
     if (e.touches.length === 1) {
       const t = e.touches[0];
       const hit = getBodyAtMouse(t.clientX, t.clientY);
@@ -573,7 +576,7 @@ function bindEvents() {
       );
       State.touchStartScale = State.scale;
     }
-  }, { passive: true });
+  }, { passive: false });
 
   canvas.addEventListener("touchmove", function (e) {
     e.preventDefault();
