@@ -183,26 +183,6 @@ body {
   display: none !important;
 }
 
-/* ===== 模态框遮罩（通用） ===== */
-.modal-overlay {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
-  z-index: 100;
-  align-items: center;
-  justify-content: center;
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-}
-
-.modal-overlay.active {
-  display: flex;
-}
-
 /* ===== 通用滚动条 ===== */
 .custom-scroll::-webkit-scrollbar {
   width: 4px;
