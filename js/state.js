@@ -13,8 +13,8 @@ const State = {
   scale: 1,
   offsetX: 0,
   offsetY: 0,
-  lastMouseX: 0,
-  lastMouseY: 0,
+  lastPointerX: 0,
+  lastPointerY: 0,
   resetBtnEnabled: false,
 
   // 天体

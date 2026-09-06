@@ -42,7 +42,7 @@ body {
 }
 
 /* 顶部面板 */
-.body-list-wrapper {
+.top-panel {
   position: fixed;
   top: 24px;
   left: 50%;
@@ -173,9 +173,8 @@ body {
 }
 
 /* UI隐藏状态 */
-.ui-hidden .top-bar,
+.ui-hidden .top-panel,
 .ui-hidden .corner-btn-right,
-.ui-hidden .body-list-wrapper,
 .ui-hidden .settings-btn-wrapper {
   display: none;
 }

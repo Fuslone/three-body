@@ -23,7 +23,7 @@ const ZOOM_IN_FACTOR = 1.1;             // 滚轮放大系数
 
 // ===== 核心状态操作 =====
 
-function defocus() {
+function clearSelection() {
   State.selectedBodyIndex = -1;
   State.trackingBodyIndex = -1;
 }
@@ -34,7 +34,7 @@ function refreshAfterBodiesChanged() {
   renderBodyList();
 }
 
-function updateSelectedBodyHUD() {
+function updateSelectedBodyInputs() {
   if (!State.isRunning) return;
   const body = State.bodies[State.selectedBodyIndex];
   if (!body) return;
@@ -68,7 +68,7 @@ function enterInitialState() {
   updatePlayButton();
   updateResetButton();
   setControlsEnabled(true);
-  hideBodyDetailPopup();
+  hideBodyDetailModal();
   renderBodyList();
 }
 
@@ -202,7 +202,7 @@ function animate() {
   }
 
   $("timeDisplay").textContent = State.simulationTime.toFixed(2);
-  updateSelectedBodyHUD();
+  updateSelectedBodyInputs();
   requestAnimationFrame(animate);
 }
 
@@ -217,7 +217,7 @@ function handleBodyPress(index, clientX, clientY) {
     State.dragStartY = clientY;
     State.dragMoved = false;
     State.trackingBodyIndex = -1;
-    hideBodyDetailPopup();
+    hideBodyDetailModal();
   } else {
     State.trackingBodyIndex = index;
   }
@@ -228,10 +228,10 @@ function handleBackgroundPress(clientX, clientY) {
   State.selectedBodyIndex = -1;
   State.trackingBodyIndex = -1;
   State.isPanning = true;
-  hideBodyDetailPopup();
+  hideBodyDetailModal();
   renderBodyList();
-  State.lastMouseX = clientX;
-  State.lastMouseY = clientY;
+  State.lastPointerX = clientX;
+  State.lastPointerY = clientY;
 }
 
 function handleDragMove(clientX, clientY, threshold = MOUSE_DRAG_THRESHOLD) {
@@ -252,10 +252,10 @@ function handleDragMove(clientX, clientY, threshold = MOUSE_DRAG_THRESHOLD) {
     return true;
   }
   if (State.isPanning) {
-    State.offsetX += (clientX - State.lastMouseX) / State.scale;
-    State.offsetY += (clientY - State.lastMouseY) / State.scale;
-    State.lastMouseX = clientX;
-    State.lastMouseY = clientY;
+    State.offsetX += (clientX - State.lastPointerX) / State.scale;
+    State.offsetY += (clientY - State.lastPointerY) / State.scale;
+    State.lastPointerX = clientX;
+    State.lastPointerY = clientY;
     return true;
   }
   return false;
@@ -264,9 +264,9 @@ function handleDragMove(clientX, clientY, threshold = MOUSE_DRAG_THRESHOLD) {
 function handleDragEnd() {
   if (State.isDraggingBody && !State.isRunning) {
     if (State.dragMoved) {
-      defocus();
+      clearSelection();
       refreshAfterBodiesChanged();
-      hideBodyDetailPopup();
+      hideBodyDetailModal();
     } else {
       State.trackingBodyIndex = State.draggedBodyIndex;
       showBodyDetailModal();
@@ -279,16 +279,16 @@ function handleDragEnd() {
 
 // ===== 弹窗管理 =====
 
-// .advanced-content 展开后的 padding-top（见 component.css），测量展开高度时需补偿
-const ADVANCED_PAD_TOP = 16;
+// .settings-group-content 展开后的 padding-top（见 component.css），测量展开高度时需补偿
+const SETTINGS_GROUP_PAD_TOP = 16;
 
-function toggleAdvancedSection(toggleEl) {
+function toggleSettingsGroup(toggleEl) {
   const content = toggleEl.nextElementSibling;
   if (!content) return;
   const isActive = toggleEl.classList.toggle("active");
 
   if (isActive) {
-    content.style.maxHeight = (content.scrollHeight + ADVANCED_PAD_TOP) + "px";
+    content.style.maxHeight = (content.scrollHeight + SETTINGS_GROUP_PAD_TOP) + "px";
     content.addEventListener("transitionend", function handler(e) {
       if (e.propertyName !== "max-height") return;
       content.removeEventListener("transitionend", handler);
@@ -298,7 +298,7 @@ function toggleAdvancedSection(toggleEl) {
     });
   } else {
     if (content.style.maxHeight === "none") {
-      content.style.maxHeight = (content.scrollHeight + ADVANCED_PAD_TOP) + "px";
+      content.style.maxHeight = (content.scrollHeight + SETTINGS_GROUP_PAD_TOP) + "px";
       void content.offsetHeight; // 强制回流，确保从当前高度过渡
     }
     content.style.maxHeight = "0";
@@ -316,7 +316,7 @@ function closeModalOnOverlayClick(modalId) {
     if (e.target === this) {
       this.classList.remove("active");
       if (modalId === "bodyDetailModal") {
-        defocus();
+        clearSelection();
         renderBodyList();
       }
     }
@@ -389,8 +389,8 @@ function bindEvents() {
     updatePlayButton();
     updateResetButton();
     if (State.isRunning) {
-      if (State.simulationTime === 0) defocus();
-      hideBodyDetailPopup();
+      if (State.simulationTime === 0) clearSelection();
+      hideBodyDetailModal();
     }
     setControlsEnabled(false);
     renderBodyList();
@@ -406,7 +406,7 @@ function bindEvents() {
   ["runParamsToggle", "randomParamsToggle", "universeParamsToggle", "saveSectionToggle", "settingsMgmtToggle"]
     .forEach((id) => {
       $(id).addEventListener("click", function () {
-        toggleAdvancedSection(this);
+        toggleSettingsGroup(this);
       });
     });
 
@@ -519,7 +519,7 @@ function bindEvents() {
 
   // --- 鼠标交互 ---
   canvas.addEventListener("mousedown", function (e) {
-    const hit = getBodyAtMouse(e.clientX, e.clientY);
+    const hit = getBodyAtPoint(e.clientX, e.clientY);
     if (hit >= 0) {
       handleBodyPress(hit, e.clientX, e.clientY);
     } else {
@@ -561,7 +561,7 @@ function bindEvents() {
     e.preventDefault();
     if (e.touches.length === 1) {
       const t = e.touches[0];
-      const hit = getBodyAtMouse(t.clientX, t.clientY);
+      const hit = getBodyAtPoint(t.clientX, t.clientY);
       if (hit >= 0) {
         handleBodyPress(hit, t.clientX, t.clientY);
       } else {
