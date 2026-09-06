@@ -76,9 +76,9 @@
         <div class="help-section">
           <h3>设置选项</h3>
           <ul>
-            <li>运行参数：模拟速度、时间步长、天体名字、速度方向、显示轨迹</li>
+            <li>运行参数：模拟速度、天体名字、速度方向、轨迹显示</li>
             <li>随机参数：随机质量/速度/位置及其范围</li>
-            <li>宇宙参数：引力常数、软化因子</li>
+            <li>宇宙参数：引力常数、软化因子、模拟精度</li>
             <li>运行参数与随机参数自动保存在浏览器</li>
           </ul>
         </div>
@@ -181,13 +181,6 @@
             </div>
 
             <div class="control-row">
-              <div class="control-label">
-                <span>时间步长</span>
-                <input type="number" class="num-input" id="dtInput" />
-              </div>
-            </div>
-
-            <div class="control-row">
               <div class="toggle-row">
                 <span style="font-size: 12px; color: rgba(180, 190, 230, 0.7)"
                   >天体名字</span
@@ -209,7 +202,7 @@
               <div class="toggle-row">
                 <div style="display: flex; flex-direction: column; gap: 2px">
                   <span style="font-size: 12px; color: rgba(180, 190, 230, 0.7)"
-                    >显示轨迹</span
+                    >轨迹显示</span
                   >
                   <span style="font-size: 10px; color: rgba(180, 190, 230, 0.4)"
                     >可能导致性能下降</span
@@ -322,6 +315,12 @@
               <div class="control-label">
                 <span>软化因子</span>
                 <input type="number" class="num-input" id="softeningInput" />
+              </div>
+            </div>
+            <div class="control-row">
+              <div class="control-label">
+                <span>模拟精度</span>
+                <input type="number" class="num-input" id="dtInput" />
               </div>
             </div>
           </div>
