@@ -11,28 +11,26 @@
   <body>
     <canvas id="canvas"></canvas>
 
-    <div class="top-bar">
-      <div class="body-list-wrapper">
-        <div class="top-status-bar">
-          <div class="status-item">
-            <span class="status-label">时间</span>
-            <span class="status-value" id="timeDisplay">0.00</span>
-          </div>
-          <div class="status-divider"></div>
-          <div class="status-item">
-            <span class="status-label">帧率</span>
-            <span class="status-value" id="fpsDisplay">60</span>
-          </div>
+    <div class="top-panel">
+      <div class="top-status-bar">
+        <div class="status-item">
+          <span class="status-label">时间</span>
+          <span class="status-value" id="timeDisplay">0.00</span>
         </div>
-        <div class="top-buttons">
-          <div class="btn-group">
-            <button id="playBtn" class="primary">开始</button>
-            <button id="resetBtn" class="primary">重置</button>
-          </div>
-          <button id="randomBtn" class="primary">随机</button>
+        <div class="status-divider"></div>
+        <div class="status-item">
+          <span class="status-label">帧率</span>
+          <span class="status-value" id="fpsDisplay">60</span>
         </div>
-        <div class="body-list custom-scroll" id="bodyList"></div>
       </div>
+      <div class="top-buttons">
+        <div class="btn-group">
+          <button id="playBtn" class="primary">开始</button>
+          <button id="resetBtn" class="primary">重置</button>
+        </div>
+        <button id="randomBtn" class="primary">随机</button>
+      </div>
+      <div class="body-list custom-scroll" id="bodyList"></div>
     </div>
 
     <div class="settings-btn-wrapper">
@@ -167,12 +165,12 @@
           <h2>控制面板</h2>
         </div>
 
-        <div class="advanced-section">
-          <div class="advanced-toggle" id="runParamsToggle">
+        <div class="settings-group">
+          <div class="settings-group-toggle" id="runParamsToggle">
             <span>运行参数</span>
-            <span class="advanced-arrow"></span>
+            <span class="settings-group-arrow"></span>
           </div>
-          <div class="advanced-content">
+          <div class="settings-group-content">
             <div class="control-row">
               <div class="control-label">
                 <span>模拟速度</span>
@@ -236,12 +234,12 @@
           </div>
         </div>
 
-        <div class="advanced-section">
-          <div class="advanced-toggle" id="randomParamsToggle">
+        <div class="settings-group">
+          <div class="settings-group-toggle" id="randomParamsToggle">
             <span>随机参数</span>
-            <span class="advanced-arrow"></span>
+            <span class="settings-group-arrow"></span>
           </div>
-          <div class="advanced-content">
+          <div class="settings-group-content">
             <div class="control-row">
               <div class="toggle-row">
                 <span style="font-size: 12px; color: rgba(180, 190, 230, 0.7)">随机质量</span>
@@ -299,12 +297,12 @@
           </div>
         </div>
 
-        <div class="advanced-section">
-          <div class="advanced-toggle" id="universeParamsToggle">
+        <div class="settings-group">
+          <div class="settings-group-toggle" id="universeParamsToggle">
             <span>宇宙参数</span>
-            <span class="advanced-arrow"></span>
+            <span class="settings-group-arrow"></span>
           </div>
-          <div class="advanced-content">
+          <div class="settings-group-content">
             <div class="control-row">
               <div class="control-label">
                 <span>引力常数</span>
@@ -326,18 +324,18 @@
           </div>
         </div>
 
-        <div class="advanced-section">
-          <div class="advanced-toggle" id="saveSectionToggle">
+        <div class="settings-group">
+          <div class="settings-group-toggle" id="saveSectionToggle">
             <span>存档管理</span>
-            <span class="advanced-arrow"></span>
+            <span class="settings-group-arrow"></span>
           </div>
-          <div class="advanced-content">
-            <div class="save-load-section">
-              <div class="save-load-row">
+          <div class="settings-group-content">
+            <div class="action-list">
+              <div class="action-row">
                 <input type="text" id="saveNameInput" class="save-name-input" placeholder="输入存档名称" />
                 <button class="btn-save" id="saveBtn">保存</button>
               </div>
-              <div class="save-load-row">
+              <div class="action-row">
                 <div class="select-wrapper" id="loadSelectWrapper">
                   <select id="loadSelect" class="load-select">
                     <option value="" disabled selected>选择存档</option>
@@ -345,7 +343,7 @@
                 </div>
                 <button class="btn-load" id="loadBtn">加载</button>
               </div>
-              <div class="save-load-row">
+              <div class="action-row">
                 <button class="btn-import" id="importBtn">导入</button>
                 <button class="btn-export" id="exportBtn">导出</button>
                 <button class="btn-delete-save" id="deleteSaveBtn">删除</button>
@@ -355,17 +353,17 @@
           </div>
         </div>
 
-        <div class="advanced-section">
-          <div class="advanced-toggle" id="settingsMgmtToggle">
+        <div class="settings-group">
+          <div class="settings-group-toggle" id="settingsMgmtToggle">
             <span>设置管理</span>
-            <span class="advanced-arrow"></span>
+            <span class="settings-group-arrow"></span>
           </div>
-          <div class="advanced-content">
-            <div class="save-load-section">
-              <div class="save-load-row">
+          <div class="settings-group-content">
+            <div class="action-list">
+              <div class="action-row">
                 <button class="btn-import" id="importSettingsBtn">导入</button>
                 <button class="btn-export" id="exportSettingsBtn">导出</button>
-                <button class="btn-default" id="resetSettingsBtn">恢复</button>
+                <button class="btn-restore" id="resetSettingsBtn">恢复</button>
                 <input type="file" id="settingsImportFileInput" accept=".json" style="display: none" />
               </div>
             </div>

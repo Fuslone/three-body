@@ -78,7 +78,7 @@ button.primary.disabled {
 .btn-delete-save,
 .btn-export,
 .btn-import,
-.btn-default,
+.btn-restore,
 .btn-cancel,
 .btn-confirm-export,
 .btn-confirm-delete,
@@ -117,7 +117,7 @@ button.primary.disabled {
 .btn-load,
 .btn-export,
 .btn-import,
-.btn-default {
+.btn-restore {
   background: rgba(100, 140, 255, 0.12);
   color: #8aa8ff;
   border-color: rgba(100, 140, 255, 0.25);
@@ -126,7 +126,7 @@ button.primary.disabled {
 .btn-load:hover,
 .btn-export:hover,
 .btn-import:hover,
-.btn-default:hover {
+.btn-restore:hover {
   background: rgba(100, 140, 255, 0.22);
   border-color: rgba(120, 170, 255, 0.4);
 }
@@ -172,7 +172,7 @@ button.primary.disabled {
 .btn-delete-save,
 .btn-export,
 .btn-import,
-.btn-default,
+.btn-restore,
 .export-modal-footer button,
 .confirm-buttons button {
   flex: 1;
@@ -468,24 +468,24 @@ input[type="checkbox"]:checked + .checkbox-custom::after {
   border-color: rgba(120, 180, 255, 0.55);
 }
 
-/* ===== 设置折叠栏 ===== */
-.advanced-section {
+/* ===== 设置分组折叠栏 ===== */
+.settings-group {
   padding: 14px 0;
 }
 
-.advanced-section + .advanced-section {
+.settings-group + .settings-group {
   border-top: 1px solid rgba(100, 150, 255, 0.12);
 }
 
-.modal-header + .advanced-section {
+.modal-header + .settings-group {
   padding-top: 0;
 }
 
-.advanced-section:last-child {
+.settings-group:last-child {
   padding-bottom: 0;
 }
 
-.advanced-toggle {
+.settings-group-toggle {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -496,11 +496,11 @@ input[type="checkbox"]:checked + .checkbox-custom::after {
   transition: color 0.2s;
 }
 
-.advanced-toggle:hover {
+.settings-group-toggle:hover {
   color: rgba(200, 210, 255, 0.85);
 }
 
-.advanced-arrow {
+.settings-group-arrow {
   width: 0;
   height: 0;
   border-top: 5px solid transparent;
@@ -509,11 +509,11 @@ input[type="checkbox"]:checked + .checkbox-custom::after {
   transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.advanced-toggle.active .advanced-arrow {
+.settings-group-toggle.active .settings-group-arrow {
   transform: rotate(90deg);
 }
 
-.advanced-content {
+.settings-group-content {
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.3s linear, padding-top 0.3s linear;
@@ -523,12 +523,12 @@ input[type="checkbox"]:checked + .checkbox-custom::after {
   padding-top: 0;
 }
 
-.advanced-toggle.active + .advanced-content {
+.settings-group-toggle.active + .settings-group-content {
   max-height: 800px;
   padding-top: 16px;
 }
 
-.advanced-content > .control-row {
+.settings-group-content > .control-row {
   margin-bottom: 0;
 }
 
@@ -539,14 +539,14 @@ input[type="checkbox"]:checked + .checkbox-custom::after {
 }
 
 /* ===== 存档管理 ===== */
-.save-load-section {
+.action-list {
   padding-bottom: 4px;
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.save-load-row {
+.action-row {
   display: flex;
   gap: 6px;
 }

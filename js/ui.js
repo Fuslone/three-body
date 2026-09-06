@@ -108,11 +108,11 @@ function showBodyDetailModal() {
   renderBodyList();
 }
 
-function hideBodyDetailPopup() {
+function hideBodyDetailModal() {
   $("bodyDetailModal").classList.remove("active");
 }
 
-function updateBodyDetailPopup() {
+function updateBodyDetailModal() {
   if ($("bodyDetailModal").classList.contains("active")) {
     showBodyDetailModal();
   }
@@ -186,9 +186,9 @@ function addBody() {
 
   saveInitialBodies();
   initAccelerations();
-  defocus();
+  clearSelection();
   renderBodyList();
-  hideBodyDetailPopup();
+  hideBodyDetailModal();
 }
 
 function deleteBody(index) {
@@ -213,7 +213,7 @@ function deleteBody(index) {
     initAccelerations();
   }
   renderBodyList();
-  updateBodyDetailPopup();
+  updateBodyDetailModal();
 }
 
 function saveInitialBodies() {
@@ -222,11 +222,11 @@ function saveInitialBodies() {
 
 // ===== 存档管理 =====
 
-const STORAGE_KEY = "three-body-saves";
+const SAVES_STORAGE_KEY = "three-body-saves";
 
 function getAllSaves() {
   try {
-    const data = localStorage.getItem(STORAGE_KEY);
+    const data = localStorage.getItem(SAVES_STORAGE_KEY);
     return data ? JSON.parse(data) : {};
   } catch {
     return {};
@@ -252,7 +252,7 @@ function saveCurrentState(name) {
   };
 
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(saves));
+    localStorage.setItem(SAVES_STORAGE_KEY, JSON.stringify(saves));
     return true;
   } catch {
     return false;
@@ -284,7 +284,7 @@ function deleteSave(name) {
   if (!saves[name]) return false;
   delete saves[name];
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(saves));
+    localStorage.setItem(SAVES_STORAGE_KEY, JSON.stringify(saves));
     return true;
   } catch {
     return false;
@@ -504,7 +504,7 @@ function deleteSelectedSaves() {
       if (saves[name]) { delete saves[name]; deleted++; }
     });
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(saves));
+      localStorage.setItem(SAVES_STORAGE_KEY, JSON.stringify(saves));
       refreshLoadSelect();
       closeDeleteModal();
       showToast(`已删除 ${deleted} 个存档`, "success");
@@ -577,7 +577,7 @@ function importSavesFromFiles(files) {
       Object.keys(mergedSaves).forEach((name) => {
         if (overwrite || !existingSaves[name]) { existingSaves[name] = mergedSaves[name]; added++; }
       });
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(existingSaves));
+      localStorage.setItem(SAVES_STORAGE_KEY, JSON.stringify(existingSaves));
       refreshLoadSelect();
       const skipped = totalImport - added;
       buildToast(added, overwrite ? overwriteNames.length : 0, skipped);

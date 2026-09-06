@@ -54,7 +54,7 @@ function worldToScreen(x, y) {
   };
 }
 
-function getBodyAtMouse(mx, my) {
+function getBodyAtPoint(mx, my) {
   const world = screenToWorld(mx, my);
   const minHitRadius = MIN_BODY_HIT_RADIUS_SCREEN / State.scale;
   for (let i = State.bodies.length - 1; i >= 0; i--) {
