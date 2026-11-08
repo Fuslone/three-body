@@ -224,24 +224,7 @@ function saveInitialBodies() {
 
 const SETTINGS_STORAGE_KEY = "three-body-settings";
 
-const DEFAULT_SETTINGS = {
-  speed: 1,
-  dt: 0.01,
-  showTrail: true,
-  trailMode: "partial",
-  trailDuration: 10,
-  showVelocity: false,
-  showBodyNames: false,
-  randomMass: true,
-  randomSpeed: true,
-  randomPosition: true,
-  randomMassMin: 500,
-  randomMassMax: 1500,
-  randomSpeedMin: 0.5,
-  randomSpeedMax: 1.3,
-  randomPosRange: 200,
-};
-
+// DEFAULT_SETTINGS / SETTINGS_KEYS 由 state.js 基于 State 初始值派生
 function getSettingsSnapshot() {
   const snapshot = {};
   for (const key in DEFAULT_SETTINGS) {

@@ -47,8 +47,8 @@ const State = {
   randomPosition: true,
   randomMassMin: 500,
   randomMassMax: 1500,
-  randomSpeedMin: 0.5,
-  randomSpeedMax: 1.3,
+  randomSpeedMin: 25,
+  randomSpeedMax: 50,
   randomPosRange: 200,
 
   // 选中/跟踪
@@ -75,3 +75,30 @@ const State = {
   touchStartDist: 0,
   touchStartScale: 1,
 };
+
+// 可持久化的设置项（"恢复默认设置"、localStorage、导入导出都用这一份）
+const SETTINGS_KEYS = [
+  "speed",
+  "dt",
+  "showTrail",
+  "trailMode",
+  "trailDuration",
+  "showVelocity",
+  "showBodyNames",
+  "randomMass",
+  "randomSpeed",
+  "randomPosition",
+  "randomMassMin",
+  "randomMassMax",
+  "randomSpeedMin",
+  "randomSpeedMax",
+  "randomPosRange",
+];
+
+// 在 State 尚未被运行时修改前，立即快照默认值；改默认值只需改上面的 State
+const DEFAULT_SETTINGS = Object.freeze(
+  SETTINGS_KEYS.reduce((acc, key) => {
+    acc[key] = State[key];
+    return acc;
+  }, {})
+);
