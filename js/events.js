@@ -241,7 +241,6 @@ function bindEvents() {
   // --- UI按钮 ---
   $("toggleUiBtn").addEventListener("click", function () {
     const hidden = document.body.classList.toggle("ui-hidden");
-    this.textContent = hidden ? "🙈" : "👁";
     if (hidden) {
       closeAllModals();
       renderBodyList();

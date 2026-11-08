@@ -126,24 +126,21 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(18, 22, 42, 0.7);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(100, 150, 255, 0.18);
-  border-radius: 50%;
+  background: none;
+  border: none;
+  box-shadow: none;
   color: rgba(220, 230, 255, 0.8);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: filter 0.2s;
   font-family: inherit;
   z-index: 20;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
 .corner-btn:hover {
-  background: rgba(40, 50, 90, 0.8);
-  border-color: rgba(120, 170, 255, 0.35);
-  box-shadow: 0 4px 24px rgba(100, 150, 255, 0.2);
-  color: rgba(255, 255, 255, 0.95);
+  background: none;
+  border-color: transparent;
+  box-shadow: none;
+  filter: brightness(1.4);
 }
 
 .corner-btn:active {
@@ -152,6 +149,23 @@ body {
 
 .corner-btn-left {
   left: 24px;
+}
+
+/* 左下角眼睛图标：默认睁眼，界面隐藏时切换为闭合眼睛 */
+#toggleUiBtn svg {
+  flex: none;
+}
+
+#toggleUiBtn .lucide-eye-off {
+  display: none;
+}
+
+.ui-hidden #toggleUiBtn .lucide-eye {
+  display: none;
+}
+
+.ui-hidden #toggleUiBtn .lucide-eye-off {
+  display: block;
 }
 
 .corner-btn-right {
