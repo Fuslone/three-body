@@ -51,7 +51,7 @@ function closeModalOnOverlayClick(modalId) {
 // 参数输入框配置（HTML 中只保留 type/class/id，初始值与范围统一在此维护）
 // guard: 模拟开始后禁止修改；recompute: 变更后重算加速度；persist: 变更后持久化设置
 const PARAM_INPUTS = [
-  { id: "speedInput", key: "speed", def: 1, min: 0.01, max: null, guard: true, persist: true },
+  { id: "speedInput", key: "speed", def: 1, min: 0.01, max: null, guard: false, persist: true },
   { id: "dtInput", key: "dt", def: 0.01, min: 0.01, max: null, guard: true, persist: true }, // 模拟精度
   { id: "gravityInput", key: "G", def: 500, min: 0.01, max: 100000, guard: true, recompute: true },
   { id: "softeningInput", key: "softening", def: 20, min: 0, max: 200, guard: true, recompute: true },

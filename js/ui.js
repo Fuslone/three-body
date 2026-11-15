@@ -33,7 +33,7 @@ function updateRandomControlsVisibility() {
 function setControlsEnabled(enabled) {
   // 运行中禁用的输入框（随机参数可随时修改，不在此列）
   const inputIds = [
-    "speedInput", "gravityInput", "dtInput", "softeningInput",
+    "gravityInput", "dtInput", "softeningInput",
     "bodyMassInput", "bodySpeedInput", "bodyAngleInput", "bodyNameInput",
   ];
   inputIds.forEach((id) => {
