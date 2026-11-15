@@ -109,12 +109,46 @@ function bindEvents() {
     State.isRunning = !State.isRunning;
     updatePlayButton();
     updateResetButton();
+
+    if (State.isRewindMode) {
+      if (State.isRunning) {
+        // 点击开始：禁用滑块
+        setRewindSliderDisabled(true);
+      } else {
+        // 点击暂停：恢复滑块可用
+        setRewindSliderDisabled(false);
+      }
+    }
+
     if (State.isRunning) {
       if (State.simulationTime === 0) clearSelection();
       hideBodyDetailModal();
     }
     setControlsEnabled(false);
     renderBodyList();
+    updateRewindButton();
+  });
+
+  $("rewindBtn").addEventListener("click", function () {
+    if (State.isRunning || State.isRewindMode) return;
+    if (enterRewindMode(100)) {
+      showRewindSlider();
+      $("rewindSlider").value = 100;
+      $("rewindSlider").disabled = false;
+    }
+  });
+
+  $("rewindSlider").addEventListener("input", function () {
+    if (!State.isRewindMode) return;
+    if (State.isRunning) return; // 运行中滑块被禁用
+    const pct = parseInt(this.value, 10);
+    const firstPoint = State.rewindSnapshot[0][0];
+    if (State.rewindSnapshotTimeSpan > 0) {
+      State.rewindCurrentTime = firstPoint.t + State.rewindSnapshotTimeSpan * pct / 100;
+    } else {
+      State.rewindCurrentTime = State.rewindTargetTime;
+    }
+    applyRewindToBodies();
   });
 
   $("resetBtn").addEventListener("click", reset);

@@ -99,11 +99,29 @@ function drawTrails() {
   const ctx = State.ctx;
   const bodies = State.bodies;
   const isFull = State.trailMode === "full";
-  const cutoffTime = isFull ? 0 : State.simulationTime - State.trailDuration;
+
+  // 倒带模式下：用回放时间计算 cutoff，且只画到快照中 rewindCurrentTime 对应的点
+  const isRewind = State.isRewindMode;
+  const effectiveTime = isRewind ? State.rewindCurrentTime : State.simulationTime;
+  const cutoffTime = isFull ? 0 : effectiveTime - State.trailDuration;
 
   for (let bi = 0; bi < bodies.length; bi++) {
     const body = bodies[bi];
-    const trail = body.trail;
+
+    // 获取"有效 trail 数组"
+    let trail;
+    if (isRewind && State.rewindSnapshot[bi]) {
+      // 用快照，截断到 rewindCurrentTime 对应的最后一个点
+      const snap = State.rewindSnapshot[bi];
+      let end = snap.length - 1;
+      for (let i = snap.length - 1; i >= 0; i--) {
+        if (snap[i].t <= State.rewindCurrentTime) { end = i; break; }
+      }
+      trail = snap.slice(0, end + 1);
+    } else {
+      trail = body.trail;
+    }
+
     const len = trail.length;
     if (len < 2) continue;
 

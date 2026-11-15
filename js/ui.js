@@ -371,3 +371,169 @@ function showConfirm(message, onConfirm, onCancel) {
   $("confirmOkBtn").onclick = () => { close(); if (onConfirm) onConfirm(); };
   $("confirmCancelBtn").onclick = () => { close(); if (onCancel) onCancel(); };
 }
+
+// ===== 倒带功能 =====
+
+function updateRewindButton() {
+  const btn = $("rewindBtn");
+  if (!btn) return;
+  const hasTrail = State.bodies.length > 0 && State.bodies[0].trail.length > 1;
+  btn.disabled = State.isRunning || State.isRewindMode || !hasTrail;
+}
+
+let _rewindHideTimer = null;
+
+function showRewindSlider() {
+  const wrapper = $("rewindSliderWrapper");
+  if (!wrapper) return;
+  if (_rewindHideTimer) {
+    clearTimeout(_rewindHideTimer);
+    _rewindHideTimer = null;
+  }
+  wrapper.classList.remove("hiding");
+  wrapper.classList.add("visible");
+  const slider = $("rewindSlider");
+  if (slider) slider.disabled = false;
+}
+
+function hideRewindSlider() {
+  const wrapper = $("rewindSliderWrapper");
+  if (!wrapper) return;
+  wrapper.classList.remove("visible");
+  wrapper.classList.add("hiding");
+  if (_rewindHideTimer) clearTimeout(_rewindHideTimer);
+  _rewindHideTimer = setTimeout(() => {
+    wrapper.classList.remove("hiding");
+    _rewindHideTimer = null;
+  }, 360);
+}
+
+function setRewindSliderDisabled(disabled) {
+  const slider = $("rewindSlider");
+  if (slider) slider.disabled = disabled;
+}
+
+function updateRewindSliderFromTime() {
+  const slider = $("rewindSlider");
+  if (!slider) return;
+  const span = State.rewindSnapshotTimeSpan;
+  const startTime = State.rewindSnapshot[0] ? State.rewindSnapshot[0][0].t : 0;
+  let pct = 100;
+  if (span > 0) {
+    pct = Math.min(100, Math.max(0, (State.rewindCurrentTime - startTime) / span * 100));
+  }
+  slider.value = Math.round(pct);
+}
+
+// 二分查找快照中 t <= targetTime 的最后一个点
+function findSnapshotIndex(snapshot, targetTime) {
+  const len = snapshot.length;
+  if (len === 0) return -1;
+  if (targetTime <= snapshot[0].t) return 0;
+  if (targetTime >= snapshot[len - 1].t) return len - 1;
+  let lo = 0, hi = len - 1;
+  while (lo < hi) {
+    const mid = (lo + hi + 1) >> 1;
+    if (snapshot[mid].t <= targetTime) lo = mid;
+    else hi = mid - 1;
+  }
+  return lo;
+}
+
+// 覆盖所有天体的 x/y/vx/vy 到快照中 rewindCurrentTime 对应的点
+function applyRewindToBodies() {
+  const bodies = State.bodies;
+  for (let i = 0; i < bodies.length; i++) {
+    const snapshot = State.rewindSnapshot[i];
+    if (!snapshot || snapshot.length === 0) continue;
+    const idx = findSnapshotIndex(snapshot, State.rewindCurrentTime);
+    if (idx < 0) continue;
+    const p = snapshot[idx];
+    bodies[i].x = p.x;
+    bodies[i].y = p.y;
+    bodies[i].vx = p.vx;
+    bodies[i].vy = p.vy;
+  }
+}
+
+// 初始化倒带模式（点击倒带按钮时调用）
+function enterRewindMode(pct) {
+  const bodies = State.bodies;
+  if (bodies.length === 0 || bodies[0].trail.length < 2) return false;
+
+  // 保存每个 body 的 trail 快照（深拷贝）
+  State.rewindSnapshot = bodies.map(b => b.trail.map(p => ({ ...p })));
+  for (let i = 0; i < bodies.length; i++) {
+    if (State.rewindSnapshot[i].length === 0) return false;
+  }
+  State.rewindSnapshotLen = State.rewindSnapshot[0].length;
+
+  const firstPoint = State.rewindSnapshot[0][0];
+  const lastPoint = State.rewindSnapshot[0][State.rewindSnapshotLen - 1];
+  State.rewindTargetTime = lastPoint.t;
+  State.rewindSnapshotTimeSpan = lastPoint.t - firstPoint.t;
+
+  // 根据百分比计算起始时间
+  if (State.rewindSnapshotTimeSpan > 0) {
+    State.rewindCurrentTime = firstPoint.t + State.rewindSnapshotTimeSpan * pct / 100;
+  } else {
+    State.rewindCurrentTime = lastPoint.t;
+  }
+
+  State.isRewindMode = true;
+  applyRewindToBodies();
+  updateRewindSliderFromTime();
+  updateRewindButton();
+  return true;
+}
+
+function exitRewindMode(skipRestore) {
+  if (!State.isRewindMode) {
+    // 虽然没在倒带，但 UI 状态可能残留（比如快照/滑块还在），也要清干净
+    State.rewindSnapshot = [];
+    State.rewindSnapshotLen = 0;
+    State.rewindSnapshotTimeSpan = 0;
+    State.rewindTargetTime = 0;
+    State.rewindCurrentTime = 0;
+    hideRewindSlider();
+    updateRewindButton();
+    return;
+  }
+
+  if (!skipRestore) {
+    // 把快照最后一个点保存到局部变量
+    const snapLen = State.rewindSnapshotLen;
+    const finalPoints = [];
+    for (let i = 0; i < State.bodies.length; i++) {
+      const snap = State.rewindSnapshot[i];
+      if (snap && snap.length > 0) {
+        finalPoints.push(snap[snap.length - 1]);
+      } else {
+        finalPoints.push(null);
+      }
+    }
+    for (let i = 0; i < State.bodies.length; i++) {
+      if (State.bodies[i].trail.length > snapLen) {
+        State.bodies[i].trail.length = snapLen;
+      }
+      const last = finalPoints[i];
+      if (last) {
+        State.bodies[i].x = last.x;
+        State.bodies[i].y = last.y;
+        State.bodies[i].vx = last.vx;
+        State.bodies[i].vy = last.vy;
+      }
+    }
+    State.simulationTime = State.rewindTargetTime;
+  }
+
+  State.isRewindMode = false;
+  State.rewindSnapshot = [];
+  State.rewindSnapshotLen = 0;
+  State.rewindSnapshotTimeSpan = 0;
+  State.rewindTargetTime = 0;
+  State.rewindCurrentTime = 0;
+
+  hideRewindSlider();
+  updateRewindButton();
+}

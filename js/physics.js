@@ -59,8 +59,5 @@ function updatePhysics() {
     const b = bodies[i];
     b.vx += (b._oldAx + b.ax) * dtHalf;
     b.vy += (b._oldAy + b.ay) * dtHalf;
-    b.trail.push({ x: b.x, y: b.y, t: State.simulationTime });
   }
-
-  State.simulationTime += dt;
 }

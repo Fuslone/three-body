@@ -59,6 +59,7 @@ function enterInitialState() {
   State.selectedBodyIndex = -1;
   State.trackingBodyIndex = -1;
   State.resetBtnEnabled = false;
+  exitRewindMode(true);
   updatePlayButton();
   updateResetButton();
   setControlsEnabled(true);
@@ -165,10 +166,38 @@ function animate() {
 
   drawStars();
 
+  let physicsSteps = 0;
   if (State.isRunning) {
-    const steps = Math.max(1, Math.floor(State.speed * PHYSICS_STEPS_PER_SPEED));
-    for (let i = 0; i < steps; i++) {
+    physicsSteps = Math.max(1, Math.floor(State.speed * PHYSICS_STEPS_PER_SPEED));
+    for (let i = 0; i < physicsSteps; i++) {
       updatePhysics();
+      // 倒带模式下：simTime 不增长，trail 不 push（天体位置由快照覆盖）
+      if (!State.isRewindMode) {
+        for (const b of State.bodies) {
+          b.trail.push({ x: b.x, y: b.y, vx: b.vx, vy: b.vy, t: State.simulationTime });
+        }
+        State.simulationTime += State.dt;
+      }
+    }
+  }
+
+  // 倒带模式：时间驱动追赶，同时覆盖 x/y/vx/vy 确保天体与物理一致
+  if (State.isRewindMode) {
+    if (State.isRunning) {
+      // 以物理 dt * speed * 步数 推进回放时间，与物理引擎一致
+      State.rewindCurrentTime += State.dt * physicsSteps;
+      if (State.rewindCurrentTime >= State.rewindTargetTime) {
+        State.rewindCurrentTime = State.rewindTargetTime;
+        applyRewindToBodies();   // 先把天体状态设到快照最后一个点
+        updateRewindSliderFromTime();
+        exitRewindMode();
+      } else {
+        applyRewindToBodies();
+        updateRewindSliderFromTime();
+      }
+    } else {
+      // 暂停中，保持当前回放时间对应的天体状态
+      applyRewindToBodies();
     }
   }
 
@@ -195,7 +224,7 @@ function animate() {
     $("fpsDisplay").textContent = State.fps;
   }
 
-  $("timeDisplay").textContent = State.simulationTime.toFixed(2);
+  $("timeDisplay").textContent = (State.isRewindMode ? State.rewindCurrentTime : State.simulationTime).toFixed(2);
   updateSelectedBodyInputs();
   requestAnimationFrame(animate);
 }
