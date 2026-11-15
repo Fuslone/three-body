@@ -51,130 +51,81 @@ button:disabled {
   pointer-events: none;
 }
 
-button.primary {
-  background: linear-gradient(135deg, #4a6fff, #6a8fff);
-  border-color: rgba(120, 180, 255, 0.5);
-  color: white;
-  box-shadow: 0 2px 8px rgba(74, 111, 255, 0.3);
-}
-
-button.primary:hover {
-  background: linear-gradient(135deg, #5a7fff, #7a9fff);
-  box-shadow: 0 2px 12px rgba(74, 111, 255, 0.4);
-}
-
-button.primary:disabled,
-button.primary.disabled {
-  background: linear-gradient(135deg, #4a5570, #5a6580);
-  border-color: rgba(120, 130, 160, 0.3);
-  box-shadow: none;
-  cursor: not-allowed;
-  opacity: 0.6;
-}
-
-/* 存档区按钮（统一高度30px） */
-.btn-save,
-.btn-load,
-.btn-delete-save,
-.btn-export,
-.btn-import,
-.btn-restore,
-.btn-cancel,
-.btn-confirm-export,
-.btn-confirm-delete,
-.btn-confirm {
-  height: 30px;
-  padding: 0 14px;
-  font-size: 12px;
-  font-weight: 500;
-  white-space: nowrap;
-  min-width: 52px;
-  flex: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 7px;
-}
-
-/* 主操作渐变按钮 */
-.btn-save,
-.btn-confirm-export,
-.btn-confirm {
-  background: linear-gradient(135deg, #4a6fff, #6a8fff);
-  color: white;
-  border-color: transparent;
-  box-shadow: 0 2px 8px rgba(74, 111, 255, 0.25);
-}
-
-.btn-save:hover,
-.btn-confirm-export:hover,
-.btn-confirm:hover {
-  background: linear-gradient(135deg, #5a7fff, #7a9fff);
-  box-shadow: 0 2px 12px rgba(74, 111, 255, 0.35);
-}
-
-/* 蓝色描边按钮 */
-.btn-load,
-.btn-export,
-.btn-import,
-.btn-restore {
+/* --- 主操作按钮（蓝色描边） --- */
+.btn-primary {
   background: rgba(100, 140, 255, 0.12);
   color: #8aa8ff;
   border-color: rgba(100, 140, 255, 0.25);
 }
 
-.btn-load:hover,
-.btn-export:hover,
-.btn-import:hover,
-.btn-restore:hover {
+.btn-primary:hover {
   background: rgba(100, 140, 255, 0.22);
   border-color: rgba(120, 170, 255, 0.4);
 }
 
-/* 红色删除按钮 */
-.btn-delete-save {
+.btn-primary:disabled,
+.btn-primary.disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* --- 危险删除按钮（红色描边） --- */
+.btn-danger-outline {
   background: rgba(255, 80, 80, 0.1);
   color: #ff9090;
   border-color: rgba(255, 80, 80, 0.25);
 }
 
-.btn-delete-save:hover {
+.btn-danger-outline:hover {
   background: rgba(255, 80, 80, 0.2);
   border-color: rgba(255, 100, 100, 0.4);
 }
 
-/* 灰色取消按钮 */
-.btn-cancel {
-  background: rgba(50, 65, 110, 0.5);
-  color: rgba(200, 210, 255, 0.8);
-  border-color: rgba(100, 150, 255, 0.2);
-}
-
-.btn-cancel:hover {
-  background: rgba(70, 95, 160, 0.5);
-  border-color: rgba(120, 170, 255, 0.35);
-}
-
-/* 红色危险确认按钮 */
-.btn-confirm-delete {
+/* --- 危险确认按钮（红色渐变） --- */
+.btn-danger {
   background: linear-gradient(135deg, #e04545, #ff6060);
   color: white;
   border-color: transparent;
   box-shadow: 0 2px 8px rgba(224, 69, 69, 0.25);
 }
 
-.btn-confirm-delete:hover {
+.btn-danger:hover {
   background: linear-gradient(135deg, #f05555, #ff7070);
   box-shadow: 0 2px 12px rgba(224, 69, 69, 0.35);
 }
 
-/* 三按钮等宽 */
-.btn-delete-save,
-.btn-export,
-.btn-import,
-.btn-restore,
-.export-modal-footer button,
-.confirm-buttons button {
+/* --- 存档区按钮统一尺寸（只负责尺寸/外观，不控制 flex） --- */
+.btn-primary.size-sm,
+.btn-danger-outline.size-sm,
+.btn-danger.size-sm {
+  height: 30px;
+  padding: 0 14px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  min-width: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px;
+}
+
+/* 保存/加载按钮（旁边有输入控件）→ 固定宽度不拉伸 */
+.action-row:has(.save-name-input) > button,
+.action-row:has(.select-wrapper) > button {
+  flex: none;
+}
+
+/* 存档区第三行（导入/导出/删除）三个按钮等宽 */
+.action-row:not(:has(.save-name-input)):not(:has(.select-wrapper)) > button {
+  flex: 1;
+  min-width: 0;
+}
+
+/* 导出/删除确认弹窗、通用确认弹窗 → 按钮等宽 */
+.export-modal-footer > button,
+.confirm-buttons > button {
   flex: 1;
   min-width: 0;
 }
