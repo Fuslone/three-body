@@ -5,8 +5,15 @@
 function updatePlayButton() {
   const btn = $("playBtn");
   if (!btn) return;
-  btn.textContent = State.isRunning ? "暂停" : "开始";
-  btn.classList.toggle("primary", !State.isRunning);
+  const playIcon = btn.querySelector(".icon-play");
+  const pauseIcon = btn.querySelector(".icon-pause");
+  if (State.isRunning) {
+    playIcon.style.display = "none";
+    pauseIcon.style.display = "";
+  } else {
+    playIcon.style.display = "";
+    pauseIcon.style.display = "none";
+  }
 }
 
 function updateResetButton() {
